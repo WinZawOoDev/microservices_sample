@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  gateway:
+    build: ./gateway
+    ports:
+      - 3000:3000
+    volumes:
+      - ./gateway:/usr/src/app
+    restart: unless-stopped
+    networks:
+      - node-network
+    depends_on:
+      - user
+  user:
+    build: ./user
+    ports:
+      - 3001:3000
+    volumes:
+      - ./user:/usr/src/app
+    restart: unless-stopped
+    networks:
+      - node-network
+    depends_on:
+      - db
+    links:
+      - "db"
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - node-network
+volumes:
+  postgres:
+    driver: local
+networks:
+  node-network:
+    driver: bridge
