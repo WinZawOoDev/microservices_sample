@@ -7,7 +7,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Catch(PrismaClientKnownRequestError, Prisma?.NotFoundError)
 export class PrismaExceptionFilter implements RpcExceptionFilter<RpcException> {
-  catch(exception: RpcException | PrismaClientKnownRequestError, host: ArgumentsHost): Observable<any> {
+  catch(exception: RpcException | PrismaClientKnownRequestError, host: ArgumentsHost): any {
 
     if (exception instanceof PrismaClientKnownRequestError) {
 

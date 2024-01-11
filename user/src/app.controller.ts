@@ -11,9 +11,10 @@ import { HttpToGrpcInterceptor } from 'nestjs-grpc-exceptions';
 export class AppController implements UserServiceController {
   constructor(private readonly appServices: AppService) { }
 
-  findUser(request: UserByEmail): User | Observable<User> | Promise<User> {
-    console.log(request);
-    return this.appServices.user(request);
+  async findUser(request: UserByEmail): Promise<any> {
+    const user = await this.appServices.user(request);
+    console.log(user)
+    return user;
   }
 
   create(request: User): User | Promise<User> | Observable<User> {

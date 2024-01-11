@@ -2,6 +2,7 @@ import { Controller, Get, Inject, OnModuleInit, Post, UseInterceptors } from '@n
 import { ClientGrpc } from '@nestjs/microservices';
 import { USER_SERVICE_NAME, UserServiceClient } from './interfaces/user-service.interface';
 import { GrpcToHttpInterceptor } from 'nestjs-grpc-exceptions';
+import { firstValueFrom } from 'rxjs';
 
 @Controller()
 @UseInterceptors(GrpcToHttpInterceptor)
@@ -16,8 +17,9 @@ export class AppController implements OnModuleInit {
   }
 
   @Get('user')
-  findUser() {
-    return this.userService.findUser({ email: "alice@prisma.io2" });
+  async findUser() {
+    const user = await firstValueFrom(this.userService.findUser({ email: "alice@prisma.io" }));
+    return user;
   }
 
   @Post('user')

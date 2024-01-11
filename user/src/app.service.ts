@@ -7,6 +7,10 @@ import { GrpcAbortedException } from 'nestjs-grpc-exceptions';
 export class AppService {
   constructor(private prisma: PrismaService) { }
 
+  findAll(): Promise<User[]> {
+    return this.prisma.user.findMany();
+  }
+
   async user(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
   ): Promise<User | null> {
