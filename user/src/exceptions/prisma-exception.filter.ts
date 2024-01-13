@@ -1,8 +1,7 @@
-import { Catch, RpcExceptionFilter, ArgumentsHost, ExceptionFilter, HttpStatus } from '@nestjs/common';
-import { Observable, throwError } from 'rxjs';
-import { BaseRpcExceptionFilter, RpcException } from '@nestjs/microservices';
+import { Catch, RpcExceptionFilter, ArgumentsHost } from '@nestjs/common';
+import { throwError } from 'rxjs';
+import { RpcException } from '@nestjs/microservices';
 import { Prisma } from '@prisma/client';
-import { GrpcAbortedException, GrpcAlreadyExistsException, GrpcInvalidArgumentException } from 'nestjs-grpc-exceptions';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Catch(PrismaClientKnownRequestError, Prisma?.NotFoundError)
