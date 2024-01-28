@@ -7,7 +7,7 @@ import { PrismaService } from './prisma.service';
 describe('App Service Unit Testing', () => {
 
     let appService: AppService;
-    let mockPrisma: DeepMockProxy<PrismaClient>;
+    let prismaService: DeepMockProxy<PrismaClient>;
 
     const mockUser: User = { id: 1, email: 'test@email', name: "test" };
 
@@ -19,7 +19,7 @@ describe('App Service Unit Testing', () => {
             .useValue(mockDeep<PrismaClient>())
             .compile()
 
-        mockPrisma = module.get(PrismaService);
+        prismaService = module.get(PrismaService);
         appService = module.get(AppService);
 
         const app = module.createNestApplication();
@@ -27,51 +27,51 @@ describe('App Service Unit Testing', () => {
     })
 
     describe('user', () => {
-        it('should retrieve user from database', async () => {
+        it('should retrieve user record from database', async () => {
             //@ts-ignore
-            mockPrisma.user.findUnique.mockResolvedValue(mockUser)
+            prismaService.user.findUnique.mockResolvedValue(mockUser)
             const user = await appService.user({ id: 1 });
-            expect(mockPrisma.user.findUnique).toHaveBeenCalled();
+            expect(prismaService.user.findUnique).toHaveBeenCalled();
             expect(user).toEqual(mockUser);
         })
     })
 
     describe('users', () => {
-        it('should retrieve users from database', async () => {
+        it('should retrieve user records from database', async () => {
             //@ts-ignore
-            mockPrisma.user.findMany.mockResolvedValue([mockUser])
+            prismaService.user.findMany.mockResolvedValue([mockUser])
             const users = await appService.users({ skip: 1, take: 5 })
-            expect(mockPrisma.user.findMany).toHaveBeenCalled();
+            expect(prismaService.user.findMany).toHaveBeenCalled();
             expect(users).toEqual([mockUser]);
         })
     })
 
     describe('createUser', () => {
-        it('should create user to database and return created user', async () => {
+        it('should create user record to database and return created user record', async () => {
             //@ts-ignore
-            mockPrisma.user.create.mockResolvedValueOnce(mockUser)
+            prismaService.user.create.mockResolvedValueOnce(mockUser)
             const createdUser = await appService.createUser(mockUser)
-            expect(mockPrisma.user.create).toHaveBeenCalled();
+            expect(prismaService.user.create).toHaveBeenCalled();
             expect(createdUser).toEqual(mockUser);
         })
     })
 
     describe('updateUser', () => {
-        it('should update user to database and return updated User', async () => {
+        it('should update user record to database and return updated user record', async () => {
             //@ts-ignore
-            mockPrisma.user.update.mockResolvedValueOnce(mockUser)
+            prismaService.user.update.mockResolvedValueOnce(mockUser)
             const updatedUser = await appService.updateUser({ where: { id: 1 }, data: mockUser });
-            expect(mockPrisma.user.update).toHaveBeenCalled();
+            expect(prismaService.user.update).toHaveBeenCalled();
             expect(updatedUser).toEqual(mockUser);
         })
     })
 
     describe('deletedUser', () => {
-        it('should delete user to database and return deleted User', async () => {
+        it('should delete user record to database and return deleted user record', async () => {
             //@ts-ignore
-            mockPrisma.user.delete.mockResolvedValueOnce(mockUser)
+            prismaService.user.delete.mockResolvedValueOnce(mockUser)
             const deletedUser = await appService.deleteUser({ id: 1 });
-            expect(mockPrisma.user.delete).toHaveBeenCalled();
+            expect(prismaService.user.delete).toHaveBeenCalled();
             expect(deletedUser).toEqual(mockUser);
         })
     })

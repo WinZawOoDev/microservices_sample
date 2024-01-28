@@ -1,15 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { User, Prisma } from '@prisma/client';
-import { GrpcAbortedException } from 'nestjs-grpc-exceptions';
+import { GrpcInternalException } from 'nestjs-grpc-exceptions';
 
 @Injectable()
 export class AppService {
   constructor(private prisma: PrismaService) { }
-
-  findAll(): Promise<User[]> {
-    return this.prisma.user.findMany();
-  }
 
   async user(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
@@ -26,25 +22,30 @@ export class AppService {
     where?: Prisma.UserWhereInput;
     orderBy?: Prisma.UserOrderByWithRelationInput;
   }): Promise<User[]> {
-    const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.user.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-    });
+    try {
+      const { skip, take, cursor, where, orderBy } = params;
+      return this.prisma.user.findMany({
+        skip,
+        take,
+        cursor,
+        where,
+        orderBy,
+      });
+    } catch (error) {
+      throw new GrpcInternalException(error);
+    }
+
   }
 
   async createUser(data: Prisma.UserCreateInput): Promise<User> {
-    try {
-      const user = await this.prisma.user.create({
-        data,
-      });
-      return user;
-    } catch (error) {
-      throw new GrpcAbortedException(error);
-    }
+    // try {
+    const user = await this.prisma.user.create({
+      data,
+    });
+    return user;
+    // } catch (error) {
+    //   throw new GrpcInternalException(error);
+    // }
 
   }
 
@@ -52,16 +53,26 @@ export class AppService {
     where: Prisma.UserWhereUniqueInput;
     data: Prisma.UserUpdateInput;
   }): Promise<User> {
-    const { where, data } = params;
-    return this.prisma.user.update({
-      data,
-      where,
-    });
+    try {
+      const { where, data } = params;
+      return this.prisma.user.update({
+        data,
+        where,
+      });
+    } catch (error) {
+      throw new GrpcInternalException(error);
+    }
+
   }
 
   async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
-    return this.prisma.user.delete({
-      where,
-    });
+    try {
+      return this.prisma.user.delete({
+        where,
+      });
+    } catch (error) {
+      throw new GrpcInternalException(error);
+    }
+
   }
 }
