@@ -5,7 +5,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { status } from '@grpc/grpc-js';
 
 @Catch(PrismaClientKnownRequestError)
-export class PrismaExceptionFilter implements RpcExceptionFilter<RpcException> {
+export class PrismaErrorFilter implements RpcExceptionFilter<RpcException> {
 
   private readonly logger = new Logger('prisma-exceptions-filter');
 
@@ -21,6 +21,9 @@ export class PrismaExceptionFilter implements RpcExceptionFilter<RpcException> {
       switch (exception.code) {
         case "P2002":
           prismaExcep = { errorName: exception.name, statusCode: status.ALREADY_EXISTS, message: "Record already exists", error }
+          break;
+        case "P":
+          prismaExcep = { errorName: exception.name, statusCode: status.NOT_FOUND, message: "Record not found", error }
           break;
         default:
           break;

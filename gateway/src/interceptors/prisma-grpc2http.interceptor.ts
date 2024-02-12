@@ -10,6 +10,7 @@ export class PrismaGrpc2HttpInterceptor implements NestInterceptor {
 
     private readonly grpc2http_code: Record<string, number> = {
         [GrpcStatus.ALREADY_EXISTS]: HttpStatus.CONFLICT,
+        [GrpcStatus.NOT_FOUND]: HttpStatus.NO_CONTENT,
     };
 
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
