@@ -1,4 +1,5 @@
 /* eslint-disable */
+import { Metadata } from "@grpc/grpc-js";
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
 
@@ -17,15 +18,15 @@ export interface User {
 export const USER_PACKAGE_NAME = "user";
 
 export interface UserServiceClient {
-  findUser(request: UserByEmail): Observable<User>;
+  findUser(request: UserByEmail, metadata?: Metadata): Observable<User>;
 
-  create(request: User): Observable<User>;
+  create(request: User, metadata?: Metadata): Observable<User>;
 }
 
 export interface UserServiceController {
-  findUser(request: UserByEmail): Promise<User> | Observable<User> | User;
+  findUser(request: UserByEmail, metadata?: Metadata): Promise<User> | Observable<User> | User;
 
-  create(request: User): Promise<User> | Observable<User> | User;
+  create(request: User, metadata?: Metadata): Promise<User> | Observable<User> | User;
 }
 
 export function UserServiceControllerMethods() {

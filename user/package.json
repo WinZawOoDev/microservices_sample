@@ -12,7 +12,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "proto:generate": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=. --ts_proto_opt=nestJs=true --ts_proto_opt=lowerCaseServiceMethods=false ./src/user-service.proto",
+    "proto:generate": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=. --ts_proto_opt=nestJs=true --ts_proto_opt=lowerCaseServiceMethods=false --ts_proto_opt=addGrpcMetadata=true ./src/user-service.proto",
     "proto:watch": "chokidar \"**/*.proto\" -c \"npm run proto:generate & npm run proto:copy\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
@@ -39,6 +39,7 @@
     "class-validator": "^0.14.1",
     "jest-mock": "^29.7.0",
     "nestjs-grpc-exceptions": "^0.2.1",
+    "nestjs-i18n": "^10.4.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "ts-proto": "^1.166.2"

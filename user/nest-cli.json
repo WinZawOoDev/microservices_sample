@@ -6,7 +6,8 @@
     "deleteOutDir": true,
     "assets": [
       "**/*.proto",
-      "**/*.prisma"
+      "**/*.prisma",
+      "i18n/**/*"
     ],
     "watchAssets": true
   }
