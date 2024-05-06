@@ -1,11 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { User, Prisma } from '@prisma/client';
 import { GrpcInternalException } from 'nestjs-grpc-exceptions';
+import ProducerService from './kafka/producer/producer.service';
 
 @Injectable()
-export class AppService {
-  constructor(private prisma: PrismaService) { }
+export class AppService implements OnModuleInit, OnModuleDestroy {
+
+  constructor(
+    private prisma: PrismaService,
+    private readonly producerService: ProducerService,
+  ) { }
+
+  async onModuleInit() {
+    await this.producerService.start();
+  }
 
   async user(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
@@ -74,5 +83,9 @@ export class AppService {
       throw new GrpcInternalException(error);
     }
 
+  }
+
+  async onModuleDestroy() {
+    await this.producerService.shutdown()
   }
 }

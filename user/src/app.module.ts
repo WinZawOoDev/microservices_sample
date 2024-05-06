@@ -8,6 +8,8 @@ import { GrpcServerExceptionFilter } from 'nestjs-grpc-exceptions';
 import { I18nModule, GrpcMetadataResolver } from 'nestjs-i18n';
 import * as path from 'path';
 import { I18nCustomResolver } from './i18n-custom.resolver';
+import ProducerService from './kafka/producer/producer.service';
+import { ProducerModule } from './kafka/producer/producer.module';
 
 @Module({
   imports: [
@@ -20,7 +22,8 @@ import { I18nCustomResolver } from './i18n-custom.resolver';
       resolvers: [
         GrpcMetadataResolver
       ],
-    })
+    }),
+    ProducerModule.register({ clientId: "my-app", brokers: ['kafka:9092'] })
   ],
   controllers: [AppController],
   providers: [
