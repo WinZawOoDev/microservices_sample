@@ -1,5 +1,5 @@
 import { DynamicModule, Module } from "@nestjs/common";
-import ProducerService from "./producer.service";
+import KafkaProducerService from "./producer.service";
 import { BrokersFunction } from "kafkajs";
 
 
@@ -9,17 +9,17 @@ type Config = {
 }
 
 @Module({})
-export class ProducerModule {
+export class KafkaProducerModule {
     static register({ clientId, brokers }: Config): DynamicModule {
         return {
-            module: ProducerModule,
+            module: KafkaProducerModule,
             providers: [
                 {
-                    provide: ProducerService,
-                    useValue: new ProducerService(clientId, brokers),
+                    provide: KafkaProducerService,
+                    useValue: new KafkaProducerService(clientId, brokers),
                 }
             ],
-            exports: [ProducerService]
+            exports: [KafkaProducerService]
         }
     }
 }

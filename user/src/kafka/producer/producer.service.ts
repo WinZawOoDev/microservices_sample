@@ -4,7 +4,7 @@ import { BrokersFunction, Kafka, Message, Producer, ProducerBatch, TopicMessages
 interface CustomMessageFormat { a: string }
 
 @Injectable()
-export default class ProducerService {
+export default class KafkaProducerService {
     private producer: Producer
 
     constructor(
