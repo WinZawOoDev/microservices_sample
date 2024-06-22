@@ -8,6 +8,7 @@ import { AcceptLanguageResolver, I18nContext, I18nModule } from 'nestjs-i18n';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { GrpcInterceptor } from './interceptors/grpc.interceptor';
 import { InterceptingCall, Metadata } from '@grpc/grpc-js';
+import { ClsModule, ClsServiceManager } from 'nestjs-cls';
 
 @Module({
   imports: [
@@ -21,6 +22,17 @@ import { InterceptingCall, Metadata } from '@grpc/grpc-js';
         AcceptLanguageResolver,
       ]
     }),
+    ClsModule.forRoot({
+      global: true,
+      middleware: {
+        mount: true,
+        setup: (cls, req) => {
+          // console.log(req['headers']);
+          cls.set('req_headers', req['headers'])
+        }
+      }
+    })
+    ,
     ClientsModule.register([
       {
         name: USER_SERVICE_NAME,
@@ -32,10 +44,22 @@ import { InterceptingCall, Metadata } from '@grpc/grpc-js';
           channelOptions: {
             interceptors: [
               (options, nextCall) => {
+                const cls = ClsServiceManager.getClsService();
+                console.log(cls.get('req_headers'))
                 return new InterceptingCall(nextCall(options), {
                   start: (metadata: Metadata, listener, next) => {
-                    metadata.add('lang', I18nContext.current().lang),
-                      next(metadata, listener)
+
+                    const headers = cls.get('req_headers');
+                    const req_headers = JSON.stringify(headers)
+
+                    metadata.add('lang', I18nContext.current().lang);
+                    metadata.add('http-user-agent', req_headers);
+
+                    // for (const [key, value] of Object.entries(headers)) {
+                    //   console.log(`Key: ${key}, Value: ${value}`);
+                    // }
+
+                    next(metadata, listener)
                   }
                 });
               },

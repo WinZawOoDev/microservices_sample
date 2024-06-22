@@ -9,12 +9,18 @@ import { CreateUserDto, QueryDto } from './dto/create-user.dto';
 import { Context } from './decorators/context.decroator';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { Metadata } from '@grpc/grpc-js';
+import { ClsService } from 'nestjs-cls';
 
 @Controller()
 @UseInterceptors(PrismaGrpc2HttpInterceptor)
 // @UseInterceptors(GrpcToHttpInterceptor)
 export class AppController implements OnModuleInit {
-  constructor(@Inject(USER_SERVICE_NAME) private client: ClientGrpc) { }
+
+
+  constructor(
+    @Inject(USER_SERVICE_NAME) private client: ClientGrpc,
+    private readonly cls: ClsService,
+  ) { }
 
   private readonly logger = new Logger('api-gateway');
 
@@ -25,6 +31,10 @@ export class AppController implements OnModuleInit {
       this.client.getService<UserServiceClient>(USER_SERVICE_NAME);
   }
 
+  @Get('')
+  test() {
+    return this.cls.get('req_headers')
+  }
 
   @Get('user')
   async findUser(@Query() query: QueryDto, @I18n() i18n: I18nContext) {

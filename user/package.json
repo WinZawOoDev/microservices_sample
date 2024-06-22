@@ -40,6 +40,7 @@
     "class-validator": "^0.14.1",
     "jest-mock": "^29.7.0",
     "kafkajs": "^2.2.4",
+    "nestjs-cls": "^4.3.0",
     "nestjs-grpc-exceptions": "^0.2.1",
     "nestjs-i18n": "^10.4.0",
     "reflect-metadata": "^0.1.13",
