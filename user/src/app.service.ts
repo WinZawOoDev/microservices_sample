@@ -1,15 +1,20 @@
-import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { User, Prisma } from '@prisma/client';
 import { GrpcInternalException } from 'nestjs-grpc-exceptions';
 import ProducerService from './kafka/producer/producer.service';
+import { ClsService } from 'nestjs-cls';
 
 @Injectable()
 export class AppService implements OnModuleInit, OnModuleDestroy {
 
+  private readonly logger = new Logger(AppService.name);
+
   constructor(
     private prisma: PrismaService,
     private readonly producerService: ProducerService,
+    private readonly cls: ClsService,
+
   ) { }
 
   async onModuleInit() {
@@ -19,6 +24,7 @@ export class AppService implements OnModuleInit, OnModuleDestroy {
   async user(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
   ): Promise<User | null> {
+    this.logger.log(this.cls.get('http_user_agent'))
     return this.prisma.user.findUnique({
       where: userWhereUniqueInput,
     });

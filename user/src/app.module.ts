@@ -32,10 +32,9 @@ import { ClsModule, ClsServiceManager } from 'nestjs-cls';
         setup(cls, context: ExecutionContext) {
           const args = context.switchToRpc();
           const ctx = args.getContext();
-          const internalRepr = ctx['internalRepr']
-          for (const [key, value] of Object.entries(internalRepr)) {
-            console.log(`Key: ${key}, Value: ${value}`);
-          }
+          const internalRepr = ctx['internalRepr'] as Map<string, string | boolean | number>
+          const http_user_agent = internalRepr.get('http-user-agent');
+          cls.set('http_user_agent', JSON.parse(http_user_agent[0]));
         },
       })
     })
